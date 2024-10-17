@@ -76,8 +76,17 @@ function simulateBattle(player1, player2) {
 class Tournament {
   participants = []
 
+  #check(number) {
+    if (number === 0) return false
+    if (number === 1) return true
+
+    while (number % 2 === 0) number = Math.sqrt(number)
+
+    return number === Math.sqrt(2)
+  }
+
   play() {
-    if (this.participants.length % 2 !== 0) {
+    if (!this.#check(this.participants.length)) {
       //prettier-ignore
       console.log('No se puede iniciar un torneo si el numero total de participantes no es potencia de 2')
 
