@@ -49,6 +49,9 @@ function displayCharacters(player1, player2) {
 }
 
 function simulateBattle(player1, player2) {
+  player1.health = 100
+  player2.health = 100
+
   let condition1 = player1.speed > player2.speed
 
   while (player1.health > 0 && player2.health > 0) {
@@ -77,7 +80,7 @@ class Tournament {
   participants = []
 
   #check(number) {
-    if (number === 0) return false
+    if (number < 1) return false
     if (number === 1) return true
 
     while (number % 2 === 0) number = Math.sqrt(number)
@@ -85,14 +88,31 @@ class Tournament {
     return number === Math.sqrt(2)
   }
 
+  addParticipant(participant) {
+    this.participants.push(participant)
+  }
+
   play() {
-    if (!this.#check(this.participants.length)) {
-      //prettier-ignore
-      console.log('No se puede iniciar un torneo si el numero total de participantes no es potencia de 2')
+    if (this.isPlayable) {
+      console.log('Que inicie el torneo!')
+
+      //TODO: logica para gestionar el torneo
 
       return
     }
 
-    // ...
+    //prettier-ignore
+    console.log('No se puede iniciar un torneo si el número total de participantes no es potencia de 2')
+    console.log(`Cantidad actual de participantes: ${this.participants.length.toLocaleString()}`)
+  }
+
+  get isPlayable() {
+    return this.#check(this.participants.length)
   }
 }
+
+const tournament = new Tournament()
+
+// tournament.addParticipant(new Character('Goku', 20, 60, 45))
+
+tournament.play()
