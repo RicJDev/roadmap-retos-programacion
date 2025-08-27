@@ -25,7 +25,7 @@ class Perro extends Animal {
 	}
 }
 
-let = habla = (Animal) => {
+let habla = (Animal) => {
 	Animal.emiteSonido();
 };
 
