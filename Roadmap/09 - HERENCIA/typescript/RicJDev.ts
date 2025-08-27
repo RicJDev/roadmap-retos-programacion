@@ -41,15 +41,17 @@ const mike = new Cat('Mike')
 mike.speak()
 
 //EXTRA
+type Role = 'Manager' | 'Project manager' | 'Programer'
+
 class Employee {
   name: string
   workerID: number
-  title: string
+  role: Role
 
-  constructor(name: string, workerID: number, title: string) {
+  constructor(name: string, workerID: number, role: Role) {
     this.name = name
     this.workerID = workerID
-    this.title = title
+    this.role = role
   }
 
   work(): void {
@@ -57,21 +59,50 @@ class Employee {
   }
 }
 
-interface hasWorkers {
-  workers: Employee[]
-  addWorker: (worker: Employee) => void
-  displayWorkersList: () => void
-}
-
-class Manager extends Employee implements hasWorkers {
-  workers: Employee[] = []
+class Manager extends Employee {
+  workers: Set<Employee> = new Set()
+  projects: Set<string> = new Set()
 
   constructor(name: string, workerID: number) {
-    super(name, workerID, 'manager')
+    super(name, workerID, 'Manager')
   }
 
-  addWorker(worker: Employee): void {
-    this.workers.push(worker)
+  displayWorkersList(): void {
+    console.log(`${this.name}'s workers:`)
+
+    this.workers.forEach((worker) => {
+      console.log(`- ${worker.name}: ${worker.workerID}. ${worker.role}.`)
+    })
+  }
+
+  assingProject(projectManager: ProjectManager, project: string): void {
+    console.log(`${this.name} assigned the '${project}' project to ${projectManager.name}.`)
+
+    projectManager.currentProject = project
+    this.workers.add(projectManager)
+    this.projects.add(project)
+  }
+
+  cancelProject(projectManager: ProjectManager): void {
+    console.log(
+      `${this.name} has canceled the project of ${projectManager.name}: ${projectManager.currentProject}.`
+    )
+    this.workers.delete(projectManager)
+    this.projects.delete(projectManager.currentProject)
+    projectManager.currentProject = ''
+  }
+}
+
+class ProjectManager extends Employee {
+  workers: Set<Employee> = new Set()
+  currentProject: string = ''
+
+  constructor(name: string, workerID: number) {
+    super(name, workerID, 'Project manager')
+  }
+
+  addWorker(worker: Employee) {
+    this.workers.add(worker)
 
     console.log(`${worker.name} is now working for ${this.name}.`)
   }
@@ -80,29 +111,32 @@ class Manager extends Employee implements hasWorkers {
     console.log(`${this.name}'s workers:`)
 
     this.workers.forEach((worker) => {
-      console.log(`- ${worker.name}: ${worker.workerID}. ${worker.title}`)
+      console.log(`- ${worker.name}: ${worker.workerID}. ${worker.role}`)
     })
   }
 }
 
-class ProjectManager extends Employee implements hasWorkers {
-  workers: Employee[]
-
+class Programer extends Employee {
   constructor(name: string, workerID: number) {
-    super(name, workerID, 'Project Manager')
-  }
-
-  addWorker(worker: Employee) {
-    this.workers.push(worker)
-  }
-
-  displayWorkersList(): void {
-    console.log(`${this.name}'s workers:`)
-
-    this.workers.forEach((worker) => {
-      console.log(`- ${worker.name}: ${worker.workerID}. ${worker.title}`)
-    })
+    super(name, workerID, 'Programer')
   }
 }
 
-class Programer extends Employee {}
+const manager = new Manager('John', 123)
+
+const projectManager1 = new ProjectManager('Mario', 3321)
+/*
+const projectManager2 = new ProjectManager('Hector', 4322)
+const projectManager3 = new ProjectManager('Lorraine', 1543)
+
+const programer1 = new Programer('Julieta', 12356)
+const programer2 = new Programer('Joseph', 32421)
+const programer4 = new Programer('Julieta', 89073)
+const programer5 = new Programer('Julieta', 12982)
+const programer3 = new Programer('Julieta', 35642)
+const programer6 = new Programer('Julieta', 51634)
+const programer7 = new Programer('Julieta', 22233)
+const programer8 = new Programer('Julieta', 12782)
+*/
+
+manager.assingProject(projectManager1, 'MechaGrooth Game Studio')
